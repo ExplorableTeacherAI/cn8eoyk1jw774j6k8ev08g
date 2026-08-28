@@ -74,6 +74,7 @@ const FAINT = "#E2E8F0";
 const ACCENT = "#62D0AD";
 const HIGHLIGHT = "#6366f1";
 const SUCCESS = "#22c55e";
+const SHADED = "#62CCF9"; // soft sky: the squares the student has shaded
 
 const DOUBLE_FOUR = 3 * FACES + 3; // the square where both dice show 4
 
@@ -215,9 +216,9 @@ function EventShadingDrawing() {
                             width={CELL}
                             height={CELL}
                             rx={5}
-                            fill={on ? ACCENT : "#FFFFFF"}
+                            fill={on ? SHADED : "#FFFFFF"}
                             fillOpacity={on ? 0.3 : 1}
-                            stroke={target4 ? HIGHLIGHT : on ? ACCENT : RULE}
+                            stroke={target4 ? HIGHLIGHT : on ? SHADED : RULE}
                             strokeWidth={target4 ? 3.5 : on ? 2.5 : 1.5}
                             style={{ cursor: "pointer", transition: "stroke-width 150ms ease-out" }}
                             onPointerDown={(event) => {
@@ -248,7 +249,7 @@ function EventShadingDrawing() {
                 <text x={READOUT_X} y={148} fontSize={12} fill={INK_SOFT} style={{ fontVariantNumeric: "tabular-nums" }}>
                     {`needs ${targetSquares} squares`}
                 </text>
-                <text x={READOUT_X} y={182} fontSize={13} fill={ACCENT} style={{ fontVariantNumeric: "tabular-nums" }}>
+                <text x={READOUT_X} y={182} fontSize={13} fill={SHADED} style={{ fontVariantNumeric: "tabular-nums" }}>
                     {`Shaded: ${shaded} of ${TRUE_OUTCOMES}`}
                 </text>
                 <text x={READOUT_X} y={204} fontSize={12} fill={INK_SOFT} style={{ fontVariantNumeric: "tabular-nums" }}>
@@ -281,7 +282,7 @@ function EventShadingDrawing() {
                     width={Math.max(0, trackX(shaded) - TRACK_LEFT)}
                     height={12}
                     rx={6}
-                    fill={matched ? SUCCESS : ACCENT}
+                    fill={matched ? SUCCESS : SHADED}
                     style={{ transition: "fill 150ms ease-out" }}
                 />
                 <line

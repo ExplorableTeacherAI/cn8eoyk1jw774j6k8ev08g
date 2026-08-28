@@ -223,7 +223,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 0,
         max: 36,
         step: 1,
-        color: '#62D0AD',
+        color: '#62CCF9',
     },
     eventGridHighlight: {
         defaultValue: '',
