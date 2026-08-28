@@ -171,6 +171,61 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         color: '#6366f1',
     },
 
+    // ─────────────────────────────────────────
+    // SECTION 4 — Reading Any Event off the Grid
+    // ─────────────────────────────────────────
+    targetProbability: {
+        defaultValue: '1/3',
+        type: 'select',
+        label: 'Target probability',
+        description: 'The probability the shaded squares are aiming to match',
+        options: ['1/6', '1/4', '1/3', '1/2'],
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.15)',
+    },
+    shadedMask: {
+        defaultValue: '000000000000000000000000000000000000',
+        type: 'text',
+        label: 'Shaded squares',
+        description: 'One character per outcome square, 1 when the student has shaded it',
+    },
+    shadedCount: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'Shaded square count',
+        description: 'How many of the 36 outcome squares are currently shaded',
+        min: 0,
+        max: 36,
+        step: 1,
+        color: '#62D0AD',
+    },
+    eventGridHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Event grid highlight',
+        description: 'Which event the prose is pointing at in the outcome grid',
+        color: '#6366f1',
+        bgColor: 'rgba(99, 102, 241, 0.15)',
+    },
+    answerBothEven: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Both dice even',
+        description: 'Student answer for how many outcomes have both dice showing an even number',
+        correctAnswer: ['9', 'nine'],
+        placeholder: '???',
+        color: '#6366f1',
+    },
+    answerDifferByTwo: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Faces differ by two',
+        description: 'Student answer for how many outcomes have the two faces differing by exactly two',
+        correctAnswer: ['8', 'eight'],
+        placeholder: '???',
+        color: '#6366f1',
+    },
+
     answerSwappedPair: {
         defaultValue: '',
         type: 'select',
