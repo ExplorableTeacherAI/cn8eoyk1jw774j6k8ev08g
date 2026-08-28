@@ -371,6 +371,194 @@ function OutcomeGridFigure() {
     );
 }
 
+
+// ── The tree of every roll ───────────────────────────────────────────────────
+
+const TREE_WIDTH = 560;
+const TREE_HEIGHT = 410;
+const ROOT_RIGHT = 88;
+const ROOT_Y = 191;
+const FIRST_X = 200;
+const FIRST_R = 19;
+const SECOND_X = 380;
+const SECOND_R = 17;
+const OUTCOME_X = 426;
+const HEADER_Y = 34;
+const READOUT_Y = 384;
+
+const rowY = (i: number) => 56 + i * 54;
+const branchBit = (face: number) => 1 << (face - 1);
+const countBits = (mask: number) => {
+    let total = 0;
+    for (let i = 0; i < FACES; i += 1) if (mask & (1 << i)) total += 1;
+    return total;
+};
+
+function OutcomeTreeDrawing() {
+    const setVar = useSetVar();
+    const open = useVar<number>("treeOpenBranch", 1);
+    const visited = useVar<number>("treeVisitedBranches", 1);
+
+    const openRow = open - 1;
+    const opened = countBits(visited);
+
+    const openBranch = (face: number) => {
+        setVar("treeOpenBranch", face);
+        setVar("treeVisitedBranches", visited | branchBit(face));
+    };
+
+    return (
+        <svg
+            viewBox={`0 0 ${TREE_WIDTH} ${TREE_HEIGHT}`}
+            className="block w-full"
+            role="img"
+            aria-label="A tree of every roll of two dice, with one first-die branch opened out"
+        >
+            <text x={FIRST_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                First die
+            </text>
+            <text x={SECOND_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                Second die
+            </text>
+            <text x={OUTCOME_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT}>
+                Outcome
+            </text>
+
+            {/* root */}
+            <rect x={32} y={178} width={56} height={26} rx={8} fill="#FFFFFF" stroke={INK_SOFT} strokeWidth={1.5} />
+            <text x={60} y={195} fontSize={12} fill={INK} textAnchor="middle">
+                Roll
+            </text>
+
+            {/* root to each first-die face */}
+            {Array.from({ length: FACES }, (_, i) => {
+                const active = i === openRow;
+                return (
+                    <path
+                        key={`stem-${i}`}
+                        d={`M ${ROOT_RIGHT} ${ROOT_Y} C 140 ${ROOT_Y}, 148 ${rowY(i)}, ${FIRST_X - FIRST_R} ${rowY(i)}`}
+                        fill="none"
+                        stroke={active ? ACCENT : RULE}
+                        strokeWidth={active ? 3 : 1.5}
+                        strokeLinecap="round"
+                        style={{ transition: "stroke-width 150ms ease-out" }}
+                    />
+                );
+            })}
+
+            {/* the opened branch fanning out to its six second-die faces */}
+            {Array.from({ length: FACES }, (_, j) => (
+                <path
+                    key={`fan-${j}`}
+                    d={`M ${FIRST_X + FIRST_R} ${rowY(openRow)} C 290 ${rowY(openRow)}, 300 ${rowY(j)}, ${SECOND_X - SECOND_R} ${rowY(j)}`}
+                    fill="none"
+                    stroke={ACCENT}
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                />
+            ))}
+
+            {/* second-die faces and the outcome each path lands on */}
+            {Array.from({ length: FACES }, (_, j) => (
+                <g key={`leaf-${j}`}>
+                    <circle cx={SECOND_X} cy={rowY(j)} r={SECOND_R} fill="#FFFFFF" stroke={ACCENT} strokeWidth={2} />
+                    <text
+                        x={SECOND_X}
+                        y={rowY(j) + 4}
+                        fontSize={12}
+                        fill={INK}
+                        textAnchor="middle"
+                        style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                        {j + 1}
+                    </text>
+                    <text
+                        x={OUTCOME_X}
+                        y={rowY(j) + 4}
+                        fontSize={12}
+                        fill={INK_SOFT}
+                        style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                        {`(${open}, ${j + 1})`}
+                    </text>
+                </g>
+            ))}
+
+            {/* first-die faces: the one thing to click */}
+            {Array.from({ length: FACES }, (_, i) => {
+                const face = i + 1;
+                const active = i === openRow;
+                const seen = (visited & branchBit(face)) !== 0;
+                return (
+                    <g key={`first-${i}`} style={{ cursor: "pointer" }} onClick={() => openBranch(face)}>
+                        <circle
+                            cx={FIRST_X}
+                            cy={rowY(i)}
+                            r={FIRST_R}
+                            fill={active || seen ? ACCENT : "#FFFFFF"}
+                            fillOpacity={active ? 0.28 : seen ? 0.12 : 1}
+                            stroke={active || seen ? ACCENT : RULE}
+                            strokeWidth={active ? 3 : 1.5}
+                            style={{ transition: "stroke-width 150ms ease-out" }}
+                        />
+                        <text
+                            x={FIRST_X}
+                            y={rowY(i) + 4}
+                            fontSize={13}
+                            fill={active || seen ? INK : INK_SOFT}
+                            textAnchor="middle"
+                            style={{ fontVariantNumeric: "tabular-nums" }}
+                        >
+                            {face}
+                        </text>
+                        <circle cx={FIRST_X} cy={rowY(i)} r={26} fill="transparent" />
+                    </g>
+                );
+            })}
+
+            <text x={32} y={READOUT_Y} fontSize={12} fill={INK_SOFT} style={{ fontVariantNumeric: "tabular-nums" }}>
+                {`Branches opened: ${opened} of ${FACES}`}
+            </text>
+            <text
+                x={528}
+                y={READOUT_Y}
+                fontSize={12}
+                fill={ACCENT}
+                textAnchor="end"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+                {`6 \u00d7 6 = ${TRUE_OUTCOMES} possible paths`}
+            </text>
+        </svg>
+    );
+}
+
+function OutcomeTreeFigure() {
+    const setVar = useSetVar();
+    return (
+        <Figure
+            id="outcome-tree"
+            caption="Click any first-die face to open its branch. Six second-die faces fan out from whichever one you pick, and the outcome each path lands on is written at the end of it."
+            onReset={() => {
+                setVar("treeOpenBranch", 1);
+                setVar("treeVisitedBranches", 1);
+            }}
+        >
+            <OutcomeTreeDrawing />
+            <InteractionHintSequence
+                hintKey="outcome-tree-open"
+                steps={[
+                    {
+                        gesture: "click",
+                        label: "Click a first-die face to open its branch",
+                        position: { x: "36%", y: "27%" },
+                    },
+                ]}
+            />
+        </Figure>
+    );
+}
+
 // ── Blocks ───────────────────────────────────────────────────────────────────
 
 export const gridOfAllOutcomesBlocks: ReactElement[] = [
@@ -390,8 +578,8 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                 <InlineSpotColor varName="outcomeGuess" {...spotColorPropsFromDefinition(getVariableInfo('outcomeGuess'))}>
                     teal block of squares
                 </InlineSpotColor>
-                {" "}by its corner to the size you think is right, then let go and see the real
-                set appear behind it.
+                {" "}by its corner to the size you think is right, then let go. The tree below
+                lays the same rolls out a second way, one first-die branch at a time.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -399,6 +587,12 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
     <StackLayout key="layout-outcome-grid-visual" maxWidth="xl">
         <Block id="outcome-grid-visual" padding="sm" hasVisualization>
             <OutcomeGridFigure />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-outcome-tree-visual" maxWidth="xl">
+        <Block id="outcome-tree-visual" padding="sm" hasVisualization>
+            <OutcomeTreeFigure />
         </Block>
     </StackLayout>,
 
@@ -438,7 +632,7 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                     thirty-six outcomes
                 </InlineLinkedHighlight>
                 , every one equally likely. Merging the swapped rolls would leave only
-                twenty-one, and every answer after that would be wrong.
+                twenty-one.
             </EditableParagraph>
         </Block>
     </StackLayout>,
