@@ -93,7 +93,8 @@ function TotalsStripeDrawing() {
 
     const isTarget = (sum: number) =>
         (highlight === "total-7" && sum === 7) ||
-        (highlight === "total-ends" && (sum === MIN_TOTAL || sum === MAX_TOTAL));
+        (highlight === "total-ends" && (sum === MIN_TOTAL || sum === MAX_TOTAL)) ||
+        (highlight === "current-stripe" && sum === chosenTotal);
 
     const recede = highlight ? 0.35 : 1;
     const ease = { transition: "opacity 150ms ease-out" } as const;
@@ -160,7 +161,14 @@ function TotalsStripeDrawing() {
                 const target = isTarget(sum);
                 const x = cellX(col);
                 const y = cellY(row);
-                const boundPhrase = sum === 7 ? "total-7" : sum === MIN_TOTAL || sum === MAX_TOTAL ? "total-ends" : "";
+                const boundPhrase =
+                    sum === 7
+                        ? "total-7"
+                        : sum === MIN_TOTAL || sum === MAX_TOTAL
+                            ? "total-ends"
+                            : sum === chosenTotal
+                                ? "current-stripe"
+                                : "";
                 return (
                     <g key={`cell-${index}`} opacity={highlight && !target ? 0.35 : 1} style={ease}>
                         {target && (
@@ -397,8 +405,15 @@ export const whySevenWinsBlocks: ReactElement[] = [
     <StackLayout key="layout-seven-wins-insight" maxWidth="xl">
         <Block id="seven-wins-insight" padding="sm">
             <EditableParagraph id="para-seven-wins-insight" blockId="seven-wins-insight">
-                So totals are not outcomes. They are groups of outcomes, and the groups come in
-                very different sizes.
+                So totals are not outcomes. They are{" "}
+                <InlineLinkedHighlight
+                    varName="sevenWinsHighlight"
+                    highlightId="current-stripe"
+                    {...linkedHighlightPropsFromDefinition(getVariableInfo('sevenWinsHighlight'))}
+                >
+                    groups of outcomes
+                </InlineLinkedHighlight>
+                , and the groups come in very different sizes.
             </EditableParagraph>
         </Block>
     </StackLayout>,
