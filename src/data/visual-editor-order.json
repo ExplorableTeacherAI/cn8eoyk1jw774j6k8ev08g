@@ -1,4 +1,378 @@
 {
-  "version": 2,
-  "blockIds": []
+  "version": 3,
+  "blockIds": [
+    "rolling-dice-title",
+    "rolling-dice-hook",
+    "rolling-dice-puzzle",
+    "rolling-dice-promise",
+    "outcome-grid-heading",
+    "outcome-grid-setup",
+    "outcome-grid-visual",
+    "outcome-grid-order-matters",
+    "outcome-grid-count",
+    "outcome-grid-question-swapped",
+    "outcome-grid-question-coin",
+    "seven-wins-heading",
+    "seven-wins-setup",
+    "seven-wins-visual",
+    "seven-wins-count",
+    "seven-wins-insight",
+    "seven-wins-question-five",
+    "seven-wins-question-compare",
+    "event-shading-heading",
+    "event-shading-setup",
+    "event-shading-visual",
+    "event-shading-counting",
+    "event-shading-same-job",
+    "event-shading-question-even",
+    "event-shading-question-differ",
+    "wrapping-up-heading",
+    "wrapping-up-promise-kept",
+    "wrapping-up-takeaway",
+    "wrapping-up-next"
+  ],
+  "rows": [
+    {
+      "id": "layout-rolling-dice-title",
+      "type": "stack",
+      "columns": [
+        [
+          "rolling-dice-title"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-rolling-dice-hook",
+      "type": "stack",
+      "columns": [
+        [
+          "rolling-dice-hook"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-rolling-dice-puzzle",
+      "type": "stack",
+      "columns": [
+        [
+          "rolling-dice-puzzle"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-rolling-dice-promise",
+      "type": "stack",
+      "columns": [
+        [
+          "rolling-dice-promise"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-heading",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-heading"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-setup",
+      "type": "split",
+      "columns": [
+        [
+          "outcome-grid-setup"
+        ],
+        [
+          "outcome-grid-visual"
+        ]
+      ],
+      "props": {
+        "ratio": "1:1",
+        "gap": "lg",
+        "reverse": false,
+        "align": "start"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-order-matters",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-order-matters"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-count",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-count"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-question-swapped",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-question-swapped"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-outcome-grid-question-coin",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-question-coin"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-heading",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-heading"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-setup",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-setup"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-visual",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-visual"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-count",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-count"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-insight",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-insight"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-question-five",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-question-five"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-seven-wins-question-compare",
+      "type": "stack",
+      "columns": [
+        [
+          "seven-wins-question-compare"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-heading",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-heading"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-setup",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-setup"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-visual",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-visual"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-counting",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-counting"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-same-job",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-same-job"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-question-even",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-question-even"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-event-shading-question-differ",
+      "type": "stack",
+      "columns": [
+        [
+          "event-shading-question-differ"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-wrapping-up-heading",
+      "type": "stack",
+      "columns": [
+        [
+          "wrapping-up-heading"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-wrapping-up-promise-kept",
+      "type": "stack",
+      "columns": [
+        [
+          "wrapping-up-promise-kept"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-wrapping-up-takeaway",
+      "type": "stack",
+      "columns": [
+        [
+          "wrapping-up-takeaway"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-wrapping-up-next",
+      "type": "stack",
+      "columns": [
+        [
+          "wrapping-up-next"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    }
+  ]
 }
