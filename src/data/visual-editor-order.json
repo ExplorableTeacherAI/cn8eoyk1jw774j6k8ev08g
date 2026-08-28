@@ -6,8 +6,8 @@
     "rolling-dice-puzzle",
     "rolling-dice-promise",
     "outcome-grid-heading",
-    "outcome-grid-visual",
     "outcome-grid-setup",
+    "outcome-grid-visual",
     "outcome-tree-visual",
     "outcome-grid-order-matters",
     "outcome-grid-count",
@@ -96,6 +96,18 @@
       }
     },
     {
+      "id": "editor-full-outcome-grid-setup",
+      "type": "stack",
+      "columns": [
+        [
+          "outcome-grid-setup"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
       "id": "layout-outcome-grid-setup",
       "type": "split",
       "columns": [
@@ -103,7 +115,6 @@
           "outcome-grid-visual"
         ],
         [
-          "outcome-grid-setup",
           "outcome-tree-visual"
         ]
       ],
