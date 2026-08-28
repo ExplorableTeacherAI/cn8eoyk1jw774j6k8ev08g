@@ -31,7 +31,8 @@
     "wrapping-up-heading",
     "wrapping-up-promise-kept",
     "wrapping-up-takeaway",
-    "wrapping-up-next"
+    "wrapping-up-next",
+    "outcome-tree-visual"
   ],
   "rows": [
     {
@@ -388,7 +389,8 @@
       "type": "stack",
       "columns": [
         [
-          "wrapping-up-next"
+          "wrapping-up-next",
+          "outcome-tree-visual"
         ]
       ],
       "props": {
