@@ -94,20 +94,15 @@
     },
     {
       "id": "layout-outcome-grid-setup",
-      "type": "split",
+      "type": "stack",
       "columns": [
         [
-          "outcome-grid-setup"
-        ],
-        [
+          "outcome-grid-setup",
           "outcome-grid-visual"
         ]
       ],
       "props": {
-        "ratio": "1:1",
-        "gap": "lg",
-        "reverse": false,
-        "align": "start"
+        "maxWidth": "xl"
       }
     },
     {
