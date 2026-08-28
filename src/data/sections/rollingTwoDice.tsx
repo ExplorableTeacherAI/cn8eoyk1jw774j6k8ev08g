@@ -45,7 +45,7 @@ export const rollingTwoDiceBlocks: ReactElement[] = [
 
     <StackLayout key="layout-block-1787923394223" maxWidth="xl">
         <Block id="block-1787923394223" padding="sm">
-            <EditableParagraph id="para-block-1787923394223" blockId="block-1787923394223">this /</EditableParagraph>
+            <EditableParagraph id="para-block-1787923394223" blockId="block-1787923394223">this</EditableParagraph>
         </Block>
     </StackLayout>,
 ];
