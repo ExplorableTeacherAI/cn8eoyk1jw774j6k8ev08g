@@ -85,6 +85,62 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // ADD YOUR VARIABLES HERE
     // ========================================
 
+    // ─────────────────────────────────────────
+    // SECTION 2 — The Grid of All Outcomes
+    // ─────────────────────────────────────────
+    outcomeGuess: {
+        defaultValue: 9,
+        type: 'number',
+        label: 'Guessed number of outcomes',
+        description: "How many outcomes the student thinks two dice can produce",
+        min: 1,
+        max: 42,
+        step: 1,
+        color: '#62D0AD',
+    },
+    outcomeGridRevealed: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Outcome grid revealed',
+        description: 'Whether the true set of 36 outcomes has been revealed',
+    },
+    outcomeGridHovered: {
+        defaultValue: -1,
+        type: 'number',
+        label: 'Hovered outcome square',
+        description: 'Index 0-35 of the outcome square under the pointer, or -1 for none',
+        min: -1,
+        max: 35,
+        step: 1,
+    },
+    outcomeGridHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Outcome grid highlight',
+        description: 'Which part of the outcome grid the prose is pointing at',
+        color: '#6366f1',
+        bgColor: 'rgba(99, 102, 241, 0.15)',
+    },
+    answerSwappedPair: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Swapped pair answer',
+        description: 'Student answer on whether red 3 / blue 6 and red 6 / blue 3 are the same outcome',
+        options: ['the same', 'different'],
+        correctAnswer: 'different',
+        placeholder: '???',
+        color: '#6366f1',
+    },
+    answerCoinAndDie: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Coin and die outcome count',
+        description: 'Student answer for the number of outcomes of a coin toss and a die roll',
+        correctAnswer: ['12', 'twelve'],
+        placeholder: '???',
+        color: '#6366f1',
+    },
+
     // Uncomment and modify these examples for your lesson:
 
     /*
