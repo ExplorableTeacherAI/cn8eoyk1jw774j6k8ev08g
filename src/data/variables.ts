@@ -143,6 +143,13 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         max: 2047,
         step: 1,
     },
+    outcomeGroupsTerm: {
+        defaultValue: 'groups of outcomes',
+        type: 'text',
+        label: 'Groups of outcomes',
+        description: 'Highlighted term for a total seen as a group of outcomes',
+        color: '#F7B23B',
+    },
     sevenWinsHighlight: {
         defaultValue: '',
         type: 'text',
