@@ -121,6 +121,56 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         color: '#6366f1',
         bgColor: 'rgba(99, 102, 241, 0.15)',
     },
+    // ─────────────────────────────────────────
+    // SECTION 3 — Why Seven Wins
+    // ─────────────────────────────────────────
+    chosenTotal: {
+        defaultValue: 2,
+        type: 'number',
+        label: 'Chosen total',
+        description: 'The dice total whose squares are lit as a stripe across the grid',
+        min: 2,
+        max: 12,
+        step: 1,
+        color: '#62D0AD',
+    },
+    visitedTotals: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Visited totals',
+        description: 'Bitmask of which totals the student has already landed on (bit 0 is the total 2)',
+        min: 0,
+        max: 2047,
+        step: 1,
+    },
+    sevenWinsHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Seven wins highlight',
+        description: 'Which stripe of the totals grid the prose is pointing at',
+        color: '#6366f1',
+        bgColor: 'rgba(99, 102, 241, 0.15)',
+    },
+    answerWaysToFive: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Ways to make five',
+        description: 'Student answer for how many outcomes give a total of five',
+        correctAnswer: ['4', 'four'],
+        placeholder: '???',
+        color: '#6366f1',
+    },
+    answerSixOrEleven: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Six or eleven',
+        description: 'Student answer comparing the likelihood of a total of six and a total of eleven',
+        options: ['a total of six', 'a total of eleven', 'they are equally likely'],
+        correctAnswer: 'a total of six',
+        placeholder: '???',
+        color: '#6366f1',
+    },
+
     answerSwappedPair: {
         defaultValue: '',
         type: 'select',
