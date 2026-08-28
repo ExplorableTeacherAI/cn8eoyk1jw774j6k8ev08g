@@ -490,4 +490,10 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
             </EditableParagraph>
         </Block>
     </StackLayout>,
+
+    <StackLayout key="layout-block-1787923630295" maxWidth="xl">
+        <Block id="block-1787923630295" padding="sm">
+            <EditableParagraph id="para-block-1787923630295" blockId="block-1787923630295">What is the probability of the dice showing an even number on the 1st roll and an odd number on the 2nd row?</EditableParagraph>
+        </Block>
+    </StackLayout>,
 ];
