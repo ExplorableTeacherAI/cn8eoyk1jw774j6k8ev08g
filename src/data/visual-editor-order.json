@@ -27,6 +27,7 @@
     "event-shading-question-even",
     "event-shading-question-differ",
     "block-1787923630295",
+    "block-1787923679537",
     "wrapping-up-heading",
     "wrapping-up-promise-kept",
     "wrapping-up-takeaway",
@@ -328,6 +329,18 @@
       "columns": [
         [
           "block-1787923630295"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-block-1787923679537",
+      "type": "stack",
+      "columns": [
+        [
+          "block-1787923679537"
         ]
       ],
       "props": {
