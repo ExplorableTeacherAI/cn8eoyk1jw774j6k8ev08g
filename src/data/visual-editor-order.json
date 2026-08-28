@@ -5,6 +5,7 @@
     "rolling-dice-hook",
     "rolling-dice-puzzle",
     "rolling-dice-promise",
+    "block-1787923394223",
     "outcome-grid-heading",
     "outcome-grid-setup",
     "outcome-grid-visual",
@@ -74,6 +75,18 @@
       "columns": [
         [
           "rolling-dice-promise"
+        ]
+      ],
+      "props": {
+        "maxWidth": "xl"
+      }
+    },
+    {
+      "id": "layout-block-1787923394223",
+      "type": "stack",
+      "columns": [
+        [
+          "block-1787923394223"
         ]
       ],
       "props": {
