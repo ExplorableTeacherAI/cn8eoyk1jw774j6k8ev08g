@@ -97,27 +97,21 @@
     },
     {
       "id": "layout-outcome-grid-setup",
-      "type": "stack",
+      "type": "split",
       "columns": [
         [
           "outcome-grid-setup",
           "outcome-grid-visual"
-        ]
-      ],
-      "props": {
-        "maxWidth": "xl"
-      }
-    },
-    {
-      "id": "layout-outcome-tree-visual",
-      "type": "stack",
-      "columns": [
+        ],
         [
           "outcome-tree-visual"
         ]
       ],
       "props": {
-        "maxWidth": "xl"
+        "ratio": "1:1",
+        "gap": "lg",
+        "reverse": false,
+        "align": "start"
       }
     },
     {
@@ -401,8 +395,7 @@
       "type": "stack",
       "columns": [
         [
-          "wrapping-up-next",
-          "outcome-tree-visual"
+          "wrapping-up-next"
         ]
       ],
       "props": {
