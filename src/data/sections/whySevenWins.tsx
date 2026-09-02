@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactElement } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
 import {
@@ -10,9 +10,11 @@ import {
     InlineLinkedHighlight,
     InlineScrubbleNumber,
     InlineSpotColor,
+    InlineTooltip,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
-import { Figure } from "@/components/molecules";
+import { Figure, FormulaBlock } from "@/components/molecules";
 import { useVar, useSetVar, useVariableStore } from "@/stores";
 import { clamp, useSpring } from "@/lib/motion";
 import {
@@ -22,6 +24,7 @@ import {
     linkedHighlightPropsFromDefinition,
     numberPropsFromDefinition,
     spotColorPropsFromDefinition,
+    scrubVarsFromDefinitions,
 } from "../variables";
 
 // ── Domain model ─────────────────────────────────────────────────────────────
@@ -71,6 +74,8 @@ const RULE = "#CBD5E1";
 const FAINT = "#E2E8F0";
 const ACCENT = "#62D0AD";
 const HIGHLIGHT = "#6366f1";
+const FIRST_DIE = "#AC8BF9"; // soft violet — the first die, everywhere in the lesson
+const SECOND_DIE = "#F7B23B"; // warm amber — the second die, everywhere in the lesson
 
 // ── The figure ───────────────────────────────────────────────────────────────
 
@@ -126,26 +131,26 @@ function TotalsStripeDrawing() {
 
             {/* ── Axis labels around the grid ── */}
             <g opacity={recede} style={ease}>
-                <text x={GRID_LEFT + GRID_SPAN / 2} y={32} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                <text x={GRID_LEFT + GRID_SPAN / 2} y={32} fontSize={12} fill={SECOND_DIE} textAnchor="middle">
                     Second die
                 </text>
                 <text
                     x={112}
                     y={GRID_TOP + GRID_SPAN / 2}
                     fontSize={12}
-                    fill={INK_SOFT}
+                    fill={FIRST_DIE}
                     textAnchor="middle"
                     transform={`rotate(-90 112 ${GRID_TOP + GRID_SPAN / 2})`}
                 >
                     First die
                 </text>
                 {Array.from({ length: FACES }, (_, j) => (
-                    <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={54} fontSize={11} fill={INK_SOFT} textAnchor="middle">
+                    <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={54} fontSize={11} fill={SECOND_DIE} textAnchor="middle">
                         {j + 1}
                     </text>
                 ))}
                 {Array.from({ length: FACES }, (_, i) => (
-                    <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={INK_SOFT} textAnchor="end">
+                    <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={FIRST_DIE} textAnchor="end">
                         {i + 1}
                     </text>
                 ))}
@@ -336,6 +341,28 @@ function WaysForChosenTotal() {
     );
 }
 
+/**
+ * The probability of the chosen total, written out live.
+ * The scrubbable total IS the figure's marker, so dragging either moves both.
+ */
+function TotalProbabilityFormula() {
+    const chosenTotal = useVar<number>("chosenTotal", MIN_TOTAL);
+    const setVar = useSetVar();
+
+    useEffect(() => {
+        setVar("waysForTotal", waysFor(chosenTotal));
+    }, [chosenTotal, setVar]);
+
+    return (
+        <FormulaBlock
+            latex="P(\text{total} = \scrub{chosenTotal}) = \frac{\val{waysForTotal}}{\clr{allOutcomes}{36}}"
+            colorMap={{ allOutcomes: INK }}
+            variables={scrubVarsFromDefinitions(["chosenTotal", "waysForTotal"])}
+            color={INK}
+        />
+    );
+}
+
 // ── Blocks ───────────────────────────────────────────────────────────────────
 
 export const whySevenWinsBlocks: ReactElement[] = [
@@ -350,10 +377,19 @@ export const whySevenWinsBlocks: ReactElement[] = [
     <StackLayout key="layout-seven-wins-setup" maxWidth="xl">
         <Block id="seven-wins-setup" padding="sm">
             <EditableParagraph id="para-seven-wins-setup" blockId="seven-wins-setup">
-                There are eleven possible totals, from two up to twelve. It is tempting to treat
-                them as eleven equal options, the way the six faces of one die are equal. Drag
-                the teal marker along the row of totals and watch the lit stripe swell and
-                shrink.
+                There are eleven possible{" "}
+                <InlineTooltip
+                    id="tooltip-total-definition"
+                    tooltip="A total is the sum of the two faces, so a first die of 3 with a second die of 4 gives the total 7."
+                >
+                    totals
+                </InlineTooltip>
+                , from two up to twelve. It is tempting to treat them as eleven equal options,
+                the way the six faces of one die are equal. Drag the{" "}
+                <InlineSpotColor varName="chosenTotal" {...spotColorPropsFromDefinition(getVariableInfo('chosenTotal'))}>
+                    teal marker
+                </InlineSpotColor>
+                {" "}along the row of totals and watch the lit stripe swell and shrink.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -394,6 +430,12 @@ export const whySevenWinsBlocks: ReactElement[] = [
         </Block>
     </StackLayout>,
 
+    <StackLayout key="layout-seven-wins-formula" maxWidth="xl">
+        <Block id="seven-wins-formula" padding="lg">
+            <TotalProbabilityFormula />
+        </Block>
+    </StackLayout>,
+
     <StackLayout key="layout-seven-wins-insight" maxWidth="xl">
         <Block id="seven-wins-insight" padding="sm">
             <EditableParagraph id="para-seven-wins-insight" blockId="seven-wins-insight">
@@ -404,7 +446,15 @@ export const whySevenWinsBlocks: ReactElement[] = [
                 >
                     groups of outcomes
                 </InlineSpotColor>
-                , and the groups come in very different sizes.
+                , and the groups come in very different sizes. Jump between{" "}
+                <InlineTrigger varName="chosenTotal" value={7} icon="zap">
+                    the busiest total
+                </InlineTrigger>
+                {" "}and{" "}
+                <InlineTrigger varName="chosenTotal" value={12} icon="none">
+                    the loneliest one
+                </InlineTrigger>
+                {" "}to feel the gap.
             </EditableParagraph>
         </Block>
     </StackLayout>,

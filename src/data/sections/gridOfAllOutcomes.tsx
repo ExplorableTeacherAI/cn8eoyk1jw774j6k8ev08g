@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactElement } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
 import {
@@ -9,9 +9,10 @@ import {
     InlineFeedback,
     InlineLinkedHighlight,
     InlineSpotColor,
+    InlineTooltip,
     InteractionHintSequence,
 } from "@/components/atoms";
-import { Figure } from "@/components/molecules";
+import { Figure, FormulaBlock } from "@/components/molecules";
 import { useVar, useSetVar } from "@/stores";
 import { clamp, useSpring } from "@/lib/motion";
 import {
@@ -20,6 +21,7 @@ import {
     clozePropsFromDefinition,
     linkedHighlightPropsFromDefinition,
     spotColorPropsFromDefinition,
+    scrubVarsFromDefinitions,
 } from "../variables";
 
 // ── Domain model ─────────────────────────────────────────────────────────────
@@ -52,6 +54,8 @@ const INK_SOFT = "#64748B";
 const RULE = "#CBD5E1";
 const ACCENT = "#62D0AD";
 const HIGHLIGHT = "#6366f1";
+const FIRST_DIE = "#AC8BF9"; // soft violet — the first die, everywhere in the lesson
+const SECOND_DIE = "#F7B23B"; // warm amber — the second die, everywhere in the lesson
 
 const PIPS: Record<number, [number, number][]> = {
     1: [[0.5, 0.5]],
@@ -150,10 +154,10 @@ function OutcomeGridDrawing() {
 
             {/* ── Left column: the two dice and the running readouts ── */}
             <g opacity={recede} style={ease}>
-                <text x={62} y={92} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                <text x={62} y={92} fontSize={12} fill={FIRST_DIE} textAnchor="middle">
                     First die
                 </text>
-                <text x={146} y={92} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                <text x={146} y={92} fontSize={12} fill={SECOND_DIE} textAnchor="middle">
                     Second die
                 </text>
                 <Die x={32} y={100} size={60} value={firstFace} />
@@ -202,26 +206,26 @@ function OutcomeGridDrawing() {
             {/* ── The true set of 36 outcomes, uncovered on release ── */}
             <g opacity={revealed ? 1 : 0} style={{ transition: "opacity 320ms ease-out" }}>
                 <g opacity={recede} style={ease}>
-                    <text x={GRID_LEFT + (FACES * STEP - (STEP - CELL)) / 2} y={48} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                    <text x={GRID_LEFT + (FACES * STEP - (STEP - CELL)) / 2} y={48} fontSize={12} fill={SECOND_DIE} textAnchor="middle">
                         Second die
                     </text>
                     <text
                         x={258}
                         y={GRID_TOP + (FACES * STEP - (STEP - CELL)) / 2}
                         fontSize={12}
-                        fill={INK_SOFT}
+                        fill={FIRST_DIE}
                         textAnchor="middle"
                         transform={`rotate(-90 258 ${GRID_TOP + (FACES * STEP - (STEP - CELL)) / 2})`}
                     >
                         First die
                     </text>
                     {Array.from({ length: FACES }, (_, j) => (
-                        <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={68} fontSize={11} fill={INK_SOFT} textAnchor="middle">
+                        <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={68} fontSize={11} fill={SECOND_DIE} textAnchor="middle">
                             {j + 1}
                         </text>
                     ))}
                     {Array.from({ length: FACES }, (_, i) => (
-                        <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={INK_SOFT} textAnchor="end">
+                        <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={FIRST_DIE} textAnchor="end">
                             {i + 1}
                         </text>
                     ))}
@@ -414,10 +418,10 @@ function OutcomeTreeDrawing() {
             role="img"
             aria-label="A tree of every roll of two dice, with one first-die branch opened out"
         >
-            <text x={FIRST_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+            <text x={FIRST_X} y={HEADER_Y} fontSize={12} fill={FIRST_DIE} textAnchor="middle">
                 First die
             </text>
-            <text x={SECOND_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+            <text x={SECOND_X} y={HEADER_Y} fontSize={12} fill={SECOND_DIE} textAnchor="middle">
                 Second die
             </text>
             <text x={OUTCOME_X} y={HEADER_Y} fontSize={12} fill={INK_SOFT}>
@@ -438,7 +442,7 @@ function OutcomeTreeDrawing() {
                         key={`stem-${i}`}
                         d={`M ${ROOT_RIGHT} ${ROOT_Y} C 140 ${ROOT_Y}, 148 ${rowY(i)}, ${FIRST_X - FIRST_R} ${rowY(i)}`}
                         fill="none"
-                        stroke={active ? ACCENT : RULE}
+                        stroke={active ? FIRST_DIE : RULE}
                         strokeWidth={active ? 3 : 1.5}
                         strokeLinecap="round"
                         style={{ transition: "stroke-width 150ms ease-out" }}
@@ -452,7 +456,7 @@ function OutcomeTreeDrawing() {
                     key={`fan-${j}`}
                     d={`M ${FIRST_X + FIRST_R} ${rowY(openRow)} C 290 ${rowY(openRow)}, 300 ${rowY(j)}, ${SECOND_X - SECOND_R} ${rowY(j)}`}
                     fill="none"
-                    stroke={ACCENT}
+                    stroke={SECOND_DIE}
                     strokeWidth={2.5}
                     strokeLinecap="round"
                 />
@@ -461,7 +465,7 @@ function OutcomeTreeDrawing() {
             {/* second-die faces and the outcome each path lands on */}
             {Array.from({ length: FACES }, (_, j) => (
                 <g key={`leaf-${j}`}>
-                    <circle cx={SECOND_X} cy={rowY(j)} r={SECOND_R} fill="#FFFFFF" stroke={ACCENT} strokeWidth={2} />
+                    <circle cx={SECOND_X} cy={rowY(j)} r={SECOND_R} fill="#FFFFFF" stroke={SECOND_DIE} strokeWidth={2} />
                     <text
                         x={SECOND_X}
                         y={rowY(j) + 4}
@@ -495,9 +499,9 @@ function OutcomeTreeDrawing() {
                             cx={FIRST_X}
                             cy={rowY(i)}
                             r={FIRST_R}
-                            fill={active || seen ? ACCENT : "#FFFFFF"}
+                            fill={active || seen ? FIRST_DIE : "#FFFFFF"}
                             fillOpacity={active ? 0.28 : seen ? 0.12 : 1}
-                            stroke={active || seen ? ACCENT : RULE}
+                            stroke={active || seen ? FIRST_DIE : RULE}
                             strokeWidth={active ? 3 : 1.5}
                             style={{ transition: "stroke-width 150ms ease-out" }}
                         />
@@ -523,7 +527,7 @@ function OutcomeTreeDrawing() {
                 x={528}
                 y={READOUT_Y}
                 fontSize={12}
-                fill={ACCENT}
+                fill={INK}
                 textAnchor="end"
                 style={{ fontVariantNumeric: "tabular-nums" }}
             >
@@ -559,6 +563,43 @@ function OutcomeTreeFigure() {
     );
 }
 
+/** 6 x 6 = 36, coloured the way the grid is coloured, with 36 pointing back at it. */
+function GridCountFormula() {
+    return (
+        <FormulaBlock
+            latex="\text{outcomes} = \clr{firstDie}{6} \times \clr{secondDie}{6} = \highlight{all}{36}"
+            colorMap={{ firstDie: FIRST_DIE, secondDie: SECOND_DIE }}
+            linkedHighlights={{
+                all: {
+                    varName: "outcomeGridHighlight",
+                    color: HIGHLIGHT,
+                    bgColor: "rgba(99, 102, 241, 0.15)",
+                },
+            }}
+            color={INK}
+        />
+    );
+}
+
+/** The same rule, freed from dice: drag either count and the product follows. */
+function CountingRuleFormula() {
+    const first = useVar<number>("firstStageWays", 4);
+    const second = useVar<number>("secondStageWays", 5);
+    const setVar = useSetVar();
+
+    useEffect(() => {
+        setVar("stageOutcomes", first * second);
+    }, [first, second, setVar]);
+
+    return (
+        <FormulaBlock
+            latex={`\\textcolor{${FIRST_DIE}}{\\text{first}}\\;\\scrub{firstStageWays}\\;\\times\\;\\textcolor{${SECOND_DIE}}{\\text{second}}\\;\\scrub{secondStageWays}\\;=\\;\\val{stageOutcomes}\\;\\textcolor{${INK}}{\\text{outcomes}}`}
+            variables={scrubVarsFromDefinitions(["firstStageWays", "secondStageWays", "stageOutcomes"])}
+            color={INK}
+        />
+    );
+}
+
 // ── Blocks ───────────────────────────────────────────────────────────────────
 
 export const gridOfAllOutcomesBlocks: ReactElement[] = [
@@ -573,13 +614,27 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
     <StackLayout key="layout-outcome-grid-setup" maxWidth="xl">
         <Block id="outcome-grid-setup" padding="sm">
             <EditableParagraph id="para-outcome-grid-setup" blockId="outcome-grid-setup">
-                One die gives six outcomes. Two dice together give more than most people first
-                guess, so stretch the{" "}
+                One die gives six{" "}
+                <InlineTooltip
+                    id="tooltip-outcome-definition"
+                    tooltip="An outcome is one complete result of the experiment: what the first die shows paired with what the second die shows."
+                >
+                    outcomes
+                </InlineTooltip>
+                . Two dice together give more than most people first guess, so stretch the{" "}
                 <InlineSpotColor varName="outcomeGuess" {...spotColorPropsFromDefinition(getVariableInfo('outcomeGuess'))}>
                     teal block of squares
                 </InlineSpotColor>
                 {" "}by its corner to the size you think is right, then let go. The tree below
-                lays the same rolls out a second way, one first-die branch at a time.
+                fans out from the{" "}
+                <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
+                    first die
+                </InlineSpotColor>
+                {" "}to the{" "}
+                <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
+                    second
+                </InlineSpotColor>
+                , one branch at a time.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -623,7 +678,15 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
     <StackLayout key="layout-outcome-grid-count" maxWidth="xl">
         <Block id="outcome-grid-count" padding="sm">
             <EditableParagraph id="para-outcome-grid-count" blockId="outcome-grid-count">
-                Six choices for the first die and six for the second gives{" "}
+                Six choices for the{" "}
+                <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
+                    first die
+                </InlineSpotColor>
+                {" "}and six for the{" "}
+                <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
+                    second
+                </InlineSpotColor>
+                {" "}gives{" "}
                 <InlineLinkedHighlight
                     varName="outcomeGridHighlight"
                     highlightId="all"
@@ -634,6 +697,12 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                 , every one equally likely. Merging the swapped rolls would leave only
                 twenty-one.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-outcome-grid-count-formula" maxWidth="xl">
+        <Block id="outcome-grid-count-formula" padding="lg">
+            <GridCountFormula />
         </Block>
     </StackLayout>,
 
@@ -722,6 +791,12 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                     />
                 </InlineFeedback>.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-outcome-grid-counting-rule" maxWidth="xl">
+        <Block id="outcome-grid-counting-rule" padding="lg">
+            <CountingRuleFormula />
         </Block>
     </StackLayout>,
 ];

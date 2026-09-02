@@ -7,18 +7,23 @@ import {
     InlineClozeInput,
     InlineFeedback,
     InlineLinkedHighlight,
+    InlineClozeChoice,
     InlineSpotColor,
     InlineToggle,
+    InlineTooltip,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
-import { Figure } from "@/components/molecules";
+import { Figure, FormulaBlock } from "@/components/molecules";
 import { useVar, useSetVar } from "@/stores";
 import {
     getVariableInfo,
+    choicePropsFromDefinition,
     clozePropsFromDefinition,
     linkedHighlightPropsFromDefinition,
     spotColorPropsFromDefinition,
     togglePropsFromDefinition,
+    scrubVarsFromDefinitions,
 } from "../variables";
 
 // ── Domain model ─────────────────────────────────────────────────────────────
@@ -73,6 +78,8 @@ const RULE = "#CBD5E1";
 const FAINT = "#E2E8F0";
 const ACCENT = "#62D0AD";
 const HIGHLIGHT = "#6366f1";
+const FIRST_DIE = "#AC8BF9"; // soft violet — the first die, everywhere in the lesson
+const SECOND_DIE = "#F7B23B"; // warm amber — the second die, everywhere in the lesson
 const SUCCESS = "#22c55e";
 const SHADED = "#62CCF9"; // soft sky: the squares the student has shaded
 
@@ -162,26 +169,26 @@ function EventShadingDrawing() {
 
             {/* ── Axis labels ── */}
             <g opacity={recede} style={ease}>
-                <text x={GRID_LEFT + GRID_SPAN / 2} y={70} fontSize={12} fill={INK_SOFT} textAnchor="middle">
+                <text x={GRID_LEFT + GRID_SPAN / 2} y={70} fontSize={12} fill={SECOND_DIE} textAnchor="middle">
                     Second die
                 </text>
                 <text
                     x={44}
                     y={GRID_TOP + GRID_SPAN / 2}
                     fontSize={12}
-                    fill={INK_SOFT}
+                    fill={FIRST_DIE}
                     textAnchor="middle"
                     transform={`rotate(-90 44 ${GRID_TOP + GRID_SPAN / 2})`}
                 >
                     First die
                 </text>
                 {Array.from({ length: FACES }, (_, j) => (
-                    <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={90} fontSize={11} fill={INK_SOFT} textAnchor="middle">
+                    <text key={`col-${j}`} x={cellX(j) + CELL / 2} y={90} fontSize={11} fill={SECOND_DIE} textAnchor="middle">
                         {j + 1}
                     </text>
                 ))}
                 {Array.from({ length: FACES }, (_, i) => (
-                    <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={INK_SOFT} textAnchor="end">
+                    <text key={`row-${i}`} x={GRID_LEFT - 12} y={cellY(i) + CELL / 2 + 4} fontSize={11} fill={FIRST_DIE} textAnchor="end">
                         {i + 1}
                     </text>
                 ))}
@@ -342,6 +349,44 @@ function TargetSquareCount() {
     );
 }
 
+/** The shaded count, live, over the 36. The numerator wears the shading colour. */
+function ShadedProbabilityFormula() {
+    return (
+        <FormulaBlock
+            latex="P(\text{your shaded event}) = \frac{\val{shadedCount}}{\clr{allOutcomes}{36}}"
+            colorMap={{ allOutcomes: INK }}
+            variables={scrubVarsFromDefinitions(["shadedCount"])}
+            color={INK}
+        />
+    );
+}
+
+/** Even on the first roll, odd on the second: both blanks live inside the formula. */
+function EvenThenOddFormula() {
+    return (
+        <FormulaBlock
+            latex={`P(\\textcolor{${FIRST_DIE}}{\\text{even}}\\text{ then }\\textcolor{${SECOND_DIE}}{\\text{odd}}) = \\frac{\\choice{formulaEvenOddCount}}{\\textcolor{${INK}}{36}} = \\choice{formulaEvenOddFraction}`}
+            clozeChoices={{
+                formulaEvenOddCount: {
+                    correctAnswer: "9",
+                    options: ["6", "9", "12", "18"],
+                    placeholder: "??",
+                    color: SHADED,
+                    bgColor: "rgba(98, 204, 249, 0.2)",
+                },
+                formulaEvenOddFraction: {
+                    correctAnswer: "1/4",
+                    options: ["1/6", "1/4", "1/3", "1/2"],
+                    placeholder: "??",
+                    color: ACCENT,
+                    bgColor: "rgba(98, 208, 173, 0.2)",
+                },
+            }}
+            color={INK}
+        />
+    );
+}
+
 // ── Blocks ───────────────────────────────────────────────────────────────────
 
 export const readingEventsOffTheGridBlocks: ReactElement[] = [
@@ -356,9 +401,23 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
     <StackLayout key="layout-event-shading-setup" maxWidth="xl">
         <Block id="event-shading-setup" padding="sm">
             <EditableParagraph id="para-event-shading-setup" blockId="event-shading-setup">
-                Totals are only one kind of event. You might want both dice even, or at least
-                one four, or the two faces differing by exactly two. Click squares in the grid
-                to shade them until the shaded fraction hits the target above it.
+                Totals are only one kind of{" "}
+                <InlineTooltip
+                    id="tooltip-event-definition"
+                    tooltip="An event is any collection of outcomes you care about, such as both dice even or at least one four."
+                >
+                    event
+                </InlineTooltip>
+                . You might want both dice even, or at least one four, or the{" "}
+                <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
+                    first
+                </InlineSpotColor>
+                {" "}and{" "}
+                <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
+                    second
+                </InlineSpotColor>
+                {" "}faces differing by exactly two. Click squares in the grid to shade them
+                until the shaded fraction hits the target above it.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -395,6 +454,12 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
         </Block>
     </StackLayout>,
 
+    <StackLayout key="layout-event-shading-formula" maxWidth="xl">
+        <Block id="event-shading-formula" padding="lg">
+            <ShadedProbabilityFormula />
+        </Block>
+    </StackLayout>,
+
     <StackLayout key="layout-event-shading-same-job" maxWidth="xl">
         <Block id="event-shading-same-job" padding="sm">
             <EditableParagraph id="para-event-shading-same-job" blockId="event-shading-same-job">
@@ -406,7 +471,11 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
                     {...togglePropsFromDefinition(getVariableInfo('targetProbability'))}
                 />
                 {" "}means <TargetSquareCount /> of the thirty-six squares, so counting squares
-                and stating a probability are the same job.
+                and stating a probability are the same job. An{" "}
+                <InlineTrigger varName="targetProbability" value="1/2" icon="zap">
+                    even chance
+                </InlineTrigger>
+                {" "}asks for half the grid.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -494,13 +563,65 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
 
     <StackLayout key="layout-block-1787923630295" maxWidth="xl">
         <Block id="block-1787923630295" padding="sm">
-            <EditableParagraph id="para-block-1787923630295" blockId="block-1787923630295">What is the probability of the dice showing an even number on the 1st roll and an odd number on the 2nd row?</EditableParagraph>
+            <EditableParagraph id="para-block-1787923630295" blockId="block-1787923630295">
+                Here is one worth shading before you answer: an even number on the{" "}
+                <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
+                    first
+                </InlineSpotColor>
+                {" "}roll and an odd number on the{" "}
+                <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
+                    second
+                </InlineSpotColor>
+                . Fill in both blanks in the line below.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-event-even-then-odd-formula" maxWidth="xl">
+        <Block id="event-even-then-odd-formula" padding="lg">
+            <EvenThenOddFormula />
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-block-1787923679537" maxWidth="xl">
-        <Block id="block-1787923679537" padding="sm">
-            <EditableParagraph id="para-block-1787923679537" blockId="block-1787923679537">Is there a difference if the question is swapped around? (I.E. Show an odd number on the 1st roll and an even number on the 2nd roll)</EditableParagraph>
+        <Block id="block-1787923679537" padding="md">
+            <EditableParagraph id="para-block-1787923679537" blockId="block-1787923679537">
+                Swap the question round, asking for an odd first roll and an even second roll,
+                and the number of squares it covers is{" "}
+                <InlineFeedback
+                    varName="answerSwapEvenOdd"
+                    correctValue="exactly the same"
+                    position="terminal"
+                    successMessage="— yes, three odd faces paired with three even ones is still nine squares, just a different nine"
+                    failureMessage="— have another look."
+                    hint="Each die still has three odd faces and three even ones, whichever way round you ask"
+                    reviewBlockId="event-shading-counting"
+                    reviewLabel="Review counting an event"
+                    visualizationHint={{
+                        blockId: "event-shading-visual",
+                        hintKey: "feedback-event-swap-even-odd",
+                        label: "Discover it yourself",
+                        resetVars: { shadedMask: EMPTY_MASK, shadedCount: 0, eventGridHighlight: "" },
+                        steps: [
+                            {
+                                gesture: "click",
+                                label: "Shade every square with an odd first die and an even second die, then read the count",
+                                position: { x: "31%", y: "45%" },
+                                completionVar: "shadedCount",
+                                completionValue: 9,
+                                completionTolerance: 0,
+                            },
+                        ],
+                    }}
+                >
+                    <InlineClozeChoice
+                        varName="answerSwapEvenOdd"
+                        correctAnswer="exactly the same"
+                        options={["exactly the same", "smaller", "larger"]}
+                        {...choicePropsFromDefinition(getVariableInfo('answerSwapEvenOdd'))}
+                    />
+                </InlineFeedback>.
+            </EditableParagraph>
         </Block>
     </StackLayout>,
 ];

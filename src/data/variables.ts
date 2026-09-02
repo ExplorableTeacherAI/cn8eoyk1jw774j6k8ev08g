@@ -86,8 +86,69 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // ========================================
 
     // ─────────────────────────────────────────
+    // SHARED COLOUR IDENTITIES
+    // Every quantity keeps ONE colour across figure, prose and formula:
+    //   first die   soft violet  #AC8BF9
+    //   second die  warm amber   #F7B23B
+    //   favourable  soft teal    #62D0AD
+    //   shaded      soft sky     #62CCF9
+    //   all 36      ink          #475569
+    // ─────────────────────────────────────────
+    firstDieTerm: {
+        defaultValue: 'first die',
+        type: 'text',
+        label: 'First die',
+        description: 'Colour identity for the first die across prose, formulas and figures',
+        color: '#AC8BF9',
+    },
+    secondDieTerm: {
+        defaultValue: 'second die',
+        type: 'text',
+        label: 'Second die',
+        description: 'Colour identity for the second die across prose, formulas and figures',
+        color: '#F7B23B',
+    },
+    allOutcomesTerm: {
+        defaultValue: 'thirty-six outcomes',
+        type: 'text',
+        label: 'All outcomes',
+        description: 'Colour identity for the full set of 36 equally likely outcomes',
+        color: '#475569',
+    },
+
+    // ─────────────────────────────────────────
     // SECTION 2 — The Grid of All Outcomes
     // ─────────────────────────────────────────
+    firstStageWays: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'Ways for the first thing',
+        description: 'How many results the first object in a two-stage experiment can give',
+        min: 1,
+        max: 10,
+        step: 1,
+        color: '#AC8BF9',
+    },
+    secondStageWays: {
+        defaultValue: 5,
+        type: 'number',
+        label: 'Ways for the second thing',
+        description: 'How many results the second object in a two-stage experiment can give',
+        min: 1,
+        max: 10,
+        step: 1,
+        color: '#F7B23B',
+    },
+    stageOutcomes: {
+        defaultValue: 20,
+        type: 'number',
+        label: 'Outcomes altogether',
+        description: 'Derived product of firstStageWays and secondStageWays, read only',
+        min: 1,
+        max: 100,
+        step: 1,
+        color: '#62D0AD',
+    },
     outcomeGuess: {
         defaultValue: 9,
         type: 'number',
@@ -121,7 +182,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 1,
         max: 6,
         step: 1,
-        color: '#62D0AD',
+        color: '#AC8BF9',
     },
     treeVisitedBranches: {
         defaultValue: 1,
@@ -162,12 +223,22 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         max: 2047,
         step: 1,
     },
+    waysForTotal: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Ways for the chosen total',
+        description: 'Derived count of the squares that make the chosen total, read only',
+        min: 0,
+        max: 6,
+        step: 1,
+        color: '#62D0AD',
+    },
     outcomeGroupsTerm: {
         defaultValue: 'groups of outcomes',
         type: 'text',
         label: 'Groups of outcomes',
         description: 'Highlighted term for a total seen as a group of outcomes',
-        color: '#F7B23B',
+        color: '#F8A0CD',
     },
     sevenWinsHighlight: {
         defaultValue: '',
@@ -252,6 +323,38 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         color: '#6366f1',
     },
 
+    formulaEvenOddCount: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Even then odd count',
+        description: 'Numerator inside the formula for an even first roll and an odd second roll',
+        options: ['6', '9', '12', '18'],
+        correctAnswer: '9',
+        placeholder: '??',
+        color: '#62CCF9',
+        bgColor: 'rgba(98, 204, 249, 0.15)',
+    },
+    formulaEvenOddFraction: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Even then odd probability',
+        description: 'Simplified probability of an even first roll followed by an odd second roll',
+        options: ['1/6', '1/4', '1/3', '1/2'],
+        correctAnswer: '1/4',
+        placeholder: '??',
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.15)',
+    },
+    answerSwapEvenOdd: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Swapped even and odd',
+        description: 'Student answer comparing odd-then-even with even-then-odd',
+        options: ['exactly the same', 'smaller', 'larger'],
+        correctAnswer: 'exactly the same',
+        placeholder: '???',
+        color: '#6366f1',
+    },
     answerSwappedPair: {
         defaultValue: '',
         type: 'select',
