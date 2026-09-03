@@ -8,6 +8,7 @@ import {
     InlineClozeInput,
     InlineFeedback,
     InlineLinkedHighlight,
+    InlineFormula,
     InlineSpotColor,
     InlineTooltip,
     InteractionHintSequence,
@@ -567,7 +568,7 @@ function OutcomeTreeFigure() {
 function GridCountFormula() {
     return (
         <FormulaBlock
-            latex="\text{outcomes} = \clr{firstDie}{6} \times \clr{secondDie}{6} = \highlight{all}{36}"
+            latex="|S| = \clr{firstDie}{6} \times \clr{secondDie}{6} = \highlight{all}{36}"
             colorMap={{ firstDie: FIRST_DIE, secondDie: SECOND_DIE }}
             linkedHighlights={{
                 all: {
@@ -593,7 +594,7 @@ function CountingRuleFormula() {
 
     return (
         <FormulaBlock
-            latex={`\\textcolor{${FIRST_DIE}}{\\text{first}}\\;\\scrub{firstStageWays}\\;\\times\\;\\textcolor{${SECOND_DIE}}{\\text{second}}\\;\\scrub{secondStageWays}\\;=\\;\\val{stageOutcomes}\\;\\textcolor{${INK}}{\\text{outcomes}}`}
+            latex={`|S| = \\textcolor{${FIRST_DIE}}{n_1} \\times \\textcolor{${SECOND_DIE}}{n_2} = \\scrub{firstStageWays} \\times \\scrub{secondStageWays} = \\val{stageOutcomes}`}
             variables={scrubVarsFromDefinitions(["firstStageWays", "secondStageWays", "stageOutcomes"])}
             color={INK}
         />
@@ -606,7 +607,7 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
     <StackLayout key="layout-outcome-grid-heading" maxWidth="xl">
         <Block id="outcome-grid-heading" padding="md">
             <EditableH2 id="h2-outcome-grid-heading" blockId="outcome-grid-heading">
-                The Grid of All Outcomes
+                The Sample Space
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -621,11 +622,12 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                 >
                     outcomes
                 </InlineTooltip>
-                . Two dice together give more than most people first guess, so stretch the{" "}
+                . The set of all of them is the sample space S, and for two dice it is bigger
+                than most people guess, so stretch the{" "}
                 <InlineSpotColor varName="outcomeGuess" {...spotColorPropsFromDefinition(getVariableInfo('outcomeGuess'))}>
                     teal block of squares
                 </InlineSpotColor>
-                {" "}by its corner to the size you think is right, then let go. The tree below
+                {" "}by its corner to your best size, then let go. The tree below
                 fans out from the{" "}
                 <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
                     first die
@@ -692,10 +694,10 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                     highlightId="all"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo('outcomeGridHighlight'))}
                 >
-                    thirty-six outcomes
+                    thirty-six ordered pairs
                 </InlineLinkedHighlight>
-                , every one equally likely. Merging the swapped rolls would leave only
-                twenty-one.
+                , so <InlineFormula latex="|S| = 36" colorMap={{}} /> and every outcome in S is
+                equally likely. Merging the swapped rolls would leave only twenty-one.
             </EditableParagraph>
         </Block>
     </StackLayout>,

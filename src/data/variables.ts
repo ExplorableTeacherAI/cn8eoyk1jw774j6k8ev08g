@@ -109,11 +109,18 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         color: '#F7B23B',
     },
     allOutcomesTerm: {
-        defaultValue: 'thirty-six outcomes',
+        defaultValue: 'sample space',
         type: 'text',
-        label: 'All outcomes',
-        description: 'Colour identity for the full set of 36 equally likely outcomes',
+        label: 'Sample space S',
+        description: 'Colour identity for the sample space S, the full set of 36 equally likely outcomes',
         color: '#475569',
+    },
+    eventTerm: {
+        defaultValue: 'event',
+        type: 'text',
+        label: 'Event E',
+        description: 'Colour identity for an event E, a subset of the sample space',
+        color: '#62D0AD',
     },
 
     // ─────────────────────────────────────────

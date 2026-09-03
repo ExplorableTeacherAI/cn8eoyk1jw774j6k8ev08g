@@ -8,6 +8,7 @@ import {
     InlineFeedback,
     InlineLinkedHighlight,
     InlineClozeChoice,
+    InlineFormula,
     InlineSpotColor,
     InlineToggle,
     InlineTooltip,
@@ -353,8 +354,7 @@ function TargetSquareCount() {
 function ShadedProbabilityFormula() {
     return (
         <FormulaBlock
-            latex="P(\text{your shaded event}) = \frac{\val{shadedCount}}{\clr{allOutcomes}{36}}"
-            colorMap={{ allOutcomes: INK }}
+            latex={`P(E) = \\frac{\\textcolor{${SHADED}}{|E|}}{\\textcolor{${INK}}{|S|}} = \\frac{\\val{shadedCount}}{\\textcolor{${INK}}{36}}`}
             variables={scrubVarsFromDefinitions(["shadedCount"])}
             color={INK}
         />
@@ -365,7 +365,7 @@ function ShadedProbabilityFormula() {
 function EvenThenOddFormula() {
     return (
         <FormulaBlock
-            latex={`P(\\textcolor{${FIRST_DIE}}{\\text{even}}\\text{ then }\\textcolor{${SECOND_DIE}}{\\text{odd}}) = \\frac{\\choice{formulaEvenOddCount}}{\\textcolor{${INK}}{36}} = \\choice{formulaEvenOddFraction}`}
+            latex={`E = \\{\\textcolor{${FIRST_DIE}}{\\text{even}},\\ \\textcolor{${SECOND_DIE}}{\\text{odd}}\\}, \\quad P(E) = \\frac{\\choice{formulaEvenOddCount}}{\\textcolor{${INK}}{36}} = \\choice{formulaEvenOddFraction}`}
             clozeChoices={{
                 formulaEvenOddCount: {
                     correctAnswer: "9",
@@ -393,7 +393,7 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
     <StackLayout key="layout-event-shading-heading" maxWidth="xl">
         <Block id="event-shading-heading" padding="md">
             <EditableH2 id="h2-event-shading-heading" blockId="event-shading-heading">
-                Reading Any Event off the Grid
+                The Probability of an Event
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -404,7 +404,7 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
                 Totals are only one kind of{" "}
                 <InlineTooltip
                     id="tooltip-event-definition"
-                    tooltip="An event is any collection of outcomes you care about, such as both dice even or at least one four."
+                    tooltip="An event E is any subset of the sample space S, such as both dice even or at least one four."
                 >
                     event
                 </InlineTooltip>
@@ -431,8 +431,12 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
     <StackLayout key="layout-event-shading-counting" maxWidth="xl">
         <Block id="event-shading-counting" padding="sm">
             <EditableParagraph id="para-event-shading-counting" blockId="event-shading-counting">
-                Once an event is a set of outcomes, its probability is a count: how many
-                outcomes belong to it, over thirty-six.{" "}
+                Once E is a subset of S, its probability is pure counting:{" "}
+                <InlineFormula
+                    latex="P(E) = \frac{\clr{event}{|E|}}{\clr{space}{|S|}}"
+                    colorMap={{ event: '#62CCF9', space: '#475569' }}
+                />
+                , which holds only because every outcome in S is equally likely.{" "}
                 <InlineLinkedHighlight
                     varName="eventGridHighlight"
                     highlightId="at-least-one-four"
@@ -440,8 +444,8 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
                 >
                     At least one four
                 </InlineLinkedHighlight>
-                {" "}covers eleven of them, so its probability is eleven thirty-sixths. Not
-                ten, because{" "}
+                {" "}has |E| = 11, so its probability is eleven thirty-sixths. Not ten,
+                because{" "}
                 <InlineLinkedHighlight
                     varName="eventGridHighlight"
                     highlightId="double-four"
@@ -470,8 +474,8 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
                     options={["1/6", "1/4", "1/3", "1/2"]}
                     {...togglePropsFromDefinition(getVariableInfo('targetProbability'))}
                 />
-                {" "}means <TargetSquareCount /> of the thirty-six squares, so counting squares
-                and stating a probability are the same job. An{" "}
+                {" "}forces <TargetSquareCount /> as the size of E, so counting squares and
+                stating a probability are the same job. An{" "}
                 <InlineTrigger varName="targetProbability" value="1/2" icon="zap">
                     even chance
                 </InlineTrigger>
@@ -564,7 +568,8 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
     <StackLayout key="layout-block-1787923630295" maxWidth="xl">
         <Block id="block-1787923630295" padding="sm">
             <EditableParagraph id="para-block-1787923630295" blockId="block-1787923630295">
-                Here is one worth shading before you answer: an even number on the{" "}
+                Here is one worth shading before you answer. Let E be the event of an even
+                number on the{" "}
                 <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
                     first
                 </InlineSpotColor>
@@ -572,7 +577,7 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
                 <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
                     second
                 </InlineSpotColor>
-                . Fill in both blanks in the line below.
+                . Fill in both blanks below.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -586,8 +591,8 @@ export const readingEventsOffTheGridBlocks: ReactElement[] = [
     <StackLayout key="layout-block-1787923679537" maxWidth="xl">
         <Block id="block-1787923679537" padding="md">
             <EditableParagraph id="para-block-1787923679537" blockId="block-1787923679537">
-                Swap the question round, asking for an odd first roll and an even second roll,
-                and the number of squares it covers is{" "}
+                Swap the question round, so E is an odd first roll with an even second roll,
+                and the size |E| is{" "}
                 <InlineFeedback
                     varName="answerSwapEvenOdd"
                     correctValue="exactly the same"

@@ -1,13 +1,13 @@
 import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
-import { EditableH1, EditableParagraph } from "@/components/atoms";
+import { EditableH1, EditableParagraph, InlineTooltip } from "@/components/atoms";
 
 export const rollingTwoDiceBlocks: ReactElement[] = [
     <StackLayout key="layout-rolling-dice-title" maxWidth="xl">
         <Block id="rolling-dice-title" padding="md">
             <EditableH1 id="h1-rolling-dice-title" blockId="rolling-dice-title">
-                Rolling Two Dice
+                Probability of Compound Events
             </EditableH1>
         </Block>
     </StackLayout>,
@@ -35,10 +35,16 @@ export const rollingTwoDiceBlocks: ReactElement[] = [
     <StackLayout key="layout-rolling-dice-promise" maxWidth="xl">
         <Block id="rolling-dice-promise" padding="sm">
             <EditableParagraph id="para-rolling-dice-promise" blockId="rolling-dice-promise">
-                By the end of this lesson you will be able to work out the probability of any
-                event involving two dice by laying out every outcome and counting. You already
-                know how to list what one die can do, write a probability as a fraction, and
-                simplify it. That is all this needs.
+                By the end of this lesson you will be able to find{" "}
+                <InlineTooltip
+                    id="tooltip-probability-notation"
+                    tooltip="P(E) is read as the probability of the event E, a number between 0 and 1."
+                >
+                    P(E)
+                </InlineTooltip>
+                {" "}for any event E involving two dice, by listing every outcome and counting.
+                You already know how to list what one die can do, write a probability as a
+                fraction, and simplify it. That is all this needs.
             </EditableParagraph>
         </Block>
     </StackLayout>,

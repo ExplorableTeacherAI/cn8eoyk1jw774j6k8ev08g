@@ -355,8 +355,7 @@ function TotalProbabilityFormula() {
 
     return (
         <FormulaBlock
-            latex="P(\text{total} = \scrub{chosenTotal}) = \frac{\val{waysForTotal}}{\clr{allOutcomes}{36}}"
-            colorMap={{ allOutcomes: INK }}
+            latex={`E = \\{\\text{total} = \\scrub{chosenTotal}\\}, \\quad P(E) = \\frac{\\textcolor{${ACCENT}}{|E|}}{\\textcolor{${INK}}{|S|}} = \\frac{\\val{waysForTotal}}{\\textcolor{${INK}}{36}}`}
             variables={scrubVarsFromDefinitions(["chosenTotal", "waysForTotal"])}
             color={INK}
         />
@@ -369,7 +368,7 @@ export const whySevenWinsBlocks: ReactElement[] = [
     <StackLayout key="layout-seven-wins-heading" maxWidth="xl">
         <Block id="seven-wins-heading" padding="md">
             <EditableH2 id="h2-seven-wins-heading" blockId="seven-wins-heading">
-                Why Seven Wins
+                Events as Subsets of the Sample Space
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -384,8 +383,9 @@ export const whySevenWinsBlocks: ReactElement[] = [
                 >
                     totals
                 </InlineTooltip>
-                , from two up to twelve. It is tempting to treat them as eleven equal options,
-                the way the six faces of one die are equal. Drag the{" "}
+                , from two up to twelve. Each one names an event, a subset of S, and it is
+                tempting to treat the eleven as equal options the way the six faces of one die
+                are equal. Drag the{" "}
                 <InlineSpotColor varName="chosenTotal" {...spotColorPropsFromDefinition(getVariableInfo('chosenTotal'))}>
                     teal marker
                 </InlineSpotColor>
@@ -408,8 +408,8 @@ export const whySevenWinsBlocks: ReactElement[] = [
                     varName="chosenTotal"
                     {...numberPropsFromDefinition(getVariableInfo('chosenTotal'))}
                 />
-                {" "}can happen in <WaysForChosenTotal /> out of the thirty-six, and that count
-                changes from one total to the next. Seven sits on{" "}
+                {" "}is an event containing <WaysForChosenTotal /> of the thirty-six outcomes,
+                and that size changes from one total to the next. Seven sits on{" "}
                 <InlineLinkedHighlight
                     varName="sevenWinsHighlight"
                     highlightId="total-7"
@@ -439,14 +439,14 @@ export const whySevenWinsBlocks: ReactElement[] = [
     <StackLayout key="layout-seven-wins-insight" maxWidth="xl">
         <Block id="seven-wins-insight" padding="sm">
             <EditableParagraph id="para-seven-wins-insight" blockId="seven-wins-insight">
-                So totals are not outcomes. They are{" "}
+                So a total is not an outcome. It is a subset of S, a{" "}
                 <InlineSpotColor
                     varName="outcomeGroupsTerm"
                     {...spotColorPropsFromDefinition(getVariableInfo('outcomeGroupsTerm'))}
                 >
-                    groups of outcomes
+                    group of outcomes
                 </InlineSpotColor>
-                , and the groups come in very different sizes. Jump between{" "}
+                , and those subsets come in very different sizes. Jump between{" "}
                 <InlineTrigger varName="chosenTotal" value={7} icon="zap">
                     the busiest total
                 </InlineTrigger>
