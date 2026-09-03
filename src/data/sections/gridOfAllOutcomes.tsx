@@ -153,8 +153,14 @@ function OutcomeGridDrawing() {
                 </filter>
             </defs>
 
-            {/* ── Left column: the two dice and the running readouts ── */}
+            {/* ── Left column: the question, the two dice, the running readouts ── */}
             <g opacity={recede} style={ease}>
+                <text x={32} y={40} fontSize={13} fill={INK}>
+                    How many different rolls
+                </text>
+                <text x={32} y={58} fontSize={13} fill={INK}>
+                    can two dice make?
+                </text>
                 <text x={62} y={92} fontSize={12} fill={FIRST_DIE} textAnchor="middle">
                     First die
                 </text>
@@ -163,9 +169,20 @@ function OutcomeGridDrawing() {
                 </text>
                 <Die x={32} y={100} size={60} value={firstFace} />
                 <Die x={116} y={100} size={60} value={secondFace} />
-                <text x={32} y={186} fontSize={12} fill={INK_SOFT}>
-                    {revealed && hovered >= 0 ? "this square's roll" : "one possible roll"}
-                </text>
+                {revealed && hovered >= 0 ? (
+                    <text x={32} y={188} fontSize={15} style={{ fontVariantNumeric: "tabular-nums" }}>
+                        <tspan fill={INK_SOFT}>this square is </tspan>
+                        <tspan fill={INK}>(</tspan>
+                        <tspan fill={FIRST_DIE}>{firstFace}</tspan>
+                        <tspan fill={INK}>, </tspan>
+                        <tspan fill={SECOND_DIE}>{secondFace}</tspan>
+                        <tspan fill={INK}>)</tspan>
+                    </text>
+                ) : (
+                    <text x={32} y={188} fontSize={12} fill={INK_SOFT}>
+                        {revealed ? "point at any square" : "one square = one roll like this"}
+                    </text>
+                )}
 
                 <text
                     x={32}
@@ -352,7 +369,7 @@ function OutcomeGridFigure() {
     return (
         <Figure
             id="outcome-grid"
-            caption="Stretch the teal block by its corner to as many squares as you think two dice can make, then let go: the real set of outcomes appears behind your guess. Once it is showing, point at any square to see the roll that fills it."
+            caption="Every square stands for one roll of the two dice: the row says what the first die shows, the column what the second shows. Stretch the teal block by its corner until it holds as many squares as you think are possible, then let go and the true sample space appears behind your guess. Point at any square to read the roll it stands for as an ordered pair."
             onReset={() => {
                 setVar("outcomeGuess", 9);
                 setVar("outcomeGridRevealed", false);
@@ -366,7 +383,7 @@ function OutcomeGridFigure() {
                 steps={[
                     {
                         gesture: "drag",
-                        label: "Drag this corner to size your guess",
+                        label: "Drag this corner to size your guess, then let go",
                         position: { x: "72%", y: "40%" },
                         dragPath: { type: "line", startOffset: { x: -18, y: -12 }, endOffset: { x: 22, y: 16 } },
                     },
@@ -622,21 +639,13 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                 >
                     outcomes
                 </InlineTooltip>
-                . The set of all of them is the sample space S, and for two dice it is bigger
-                than most people guess, so stretch the{" "}
+                . So how many can two dice give? Below, one square stands for one roll, so
+                stretch the{" "}
                 <InlineSpotColor varName="outcomeGuess" {...spotColorPropsFromDefinition(getVariableInfo('outcomeGuess'))}>
-                    teal block of squares
+                    teal block
                 </InlineSpotColor>
-                {" "}by its corner to your best size, then let go. The tree below
-                fans out from the{" "}
-                <InlineSpotColor varName="firstDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('firstDieTerm'))}>
-                    first die
-                </InlineSpotColor>
-                {" "}to the{" "}
-                <InlineSpotColor varName="secondDieTerm" {...spotColorPropsFromDefinition(getVariableInfo('secondDieTerm'))}>
-                    second
-                </InlineSpotColor>
-                , one branch at a time.
+                {" "}by its corner until it holds as many squares as you think there are, then
+                let go and the real answer appears behind your guess.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -656,7 +665,8 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
     <StackLayout key="layout-outcome-grid-order-matters" maxWidth="xl">
         <Block id="outcome-grid-order-matters" padding="sm">
             <EditableParagraph id="para-outcome-grid-order-matters" blockId="outcome-grid-order-matters">
-                The two dice are separate objects, so{" "}
+                Point at any square and the dice show the roll it stands for, written as the
+                ordered pair (first, second). The two dice are separate objects, so{" "}
                 <InlineLinkedHighlight
                     varName="outcomeGridHighlight"
                     highlightId="pair-2-5"
@@ -696,7 +706,8 @@ export const gridOfAllOutcomesBlocks: ReactElement[] = [
                 >
                     thirty-six ordered pairs
                 </InlineLinkedHighlight>
-                , so <InlineFormula latex="|S| = 36" colorMap={{}} /> and every outcome in S is
+                . The complete list of those pairs is the sample space S, so{" "}
+                <InlineFormula latex="|S| = 36" colorMap={{}} />, and every outcome in S is
                 equally likely. Merging the swapped rolls would leave only twenty-one.
             </EditableParagraph>
         </Block>
